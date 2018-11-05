@@ -1,0 +1,26 @@
+{
+  "name": "lab3",
+  "version": "1.0.0",
+  "description": "chunyang jia's lab3",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cjia23/ece9065-cjia23-lab3.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cjia23/ece9065-cjia23-lab3/issues"
+  },
+  "homepage": "https://github.com/cjia23/ece9065-cjia23-lab3#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "mongoose": "^5.3.9"
+  }
+}
