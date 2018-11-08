@@ -6,9 +6,9 @@ var app = express();
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
-//databaseg
-mongoose.connect('mongodb://localhost:27017/bears');
-var Bear = require('./app/models/bear');
+//database
+mongoose.connect('mongodb://localhost:27017/item');
+var Item = require('./app/models/item');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
@@ -17,7 +17,6 @@ app.use(bodyParser.json());
 var port = process.env.PORT || 8080;
 
 var router = express.Router();
-
 
 router.use(function(req,res,next) {
     console.log('Something is happening.');
@@ -29,63 +28,69 @@ router.get('/',function(req, res) {
 });
 
 
-router.route('/bears')
+router.route('/items')
 
         .post(function(req,res) {
                 
-                var bear = new Bear();
-                bear.name = req.body.name;
+                var item = new Item();
+                item.name = req.body.name;
+                item.quantity = req.body.quantity;
+                item.tax_rate = req.body.tax_rate;
+                item.price = req.body.price;
         
-                bear.save(function(err) {
+                item.save(function(err) {
                   if(err)
                      res.send(err);
                      
-                  res.json({message: 'Bear created!'});
+                  res.json({message: 'Item created!'});
            });
         })
       
         .get(function(req,res){
-            Bear.find(function(err,bears){
+            Item.find(function(err,item){
                   if(err)
                     res.send(err);
                   
-                  res.json(bears);
+                  res.json(item);
             });
         });
         
-router.route('/bears/:bear_id')
+router.route('/items/:item_id')
         
         .get(function(req, res){
           
-            Bear.findById(req.params.bear_id,function(err,bear){
+            Item.findById(req.params.item_id,function(err,item){
                  if(err)
                     res.send(err);
                   
-                 res.json(bear);
+                 res.json(item);
             });
         })
-        
+
         .put(function(req,res){
           
-             Bear.findById(req.params.bear_id,function(err,bear){
+             Item.findById(req.params.item_id,function(err,item){
                if(err)
                   res.send(err);
                 
-                bear.name = req.body.name;
+                item.name = req.body.name;
+                item.quantity = req.body.quantity;
+                item.tax_rate = req.body.tax_rate;
+                item.price = req.body.price;
                 
-                bear.save(function(err){
+                item.save(function(err){
                    if(err)
                       res.send(err);
                       
-                   res.json({message: 'Bear updated'});
+                   res.json({message: 'Item updated'});
                 });
              });
         })
         
         .delete(function(req,res){
-              Bear.remove({
-                _id: req.params.bear_id
-              }, function(err,bear){
+              Item.remove({
+                _id: req.params.item_id
+              }, function(err,item){
                   if(err)
                       res.send(err);
                   
@@ -97,4 +102,4 @@ router.route('/bears/:bear_id')
 app.use('/api',router);
 
 app.listen(port);
-console.log('My server is running at: ' + port);
+console.log('Magic is happening at: ' + port);
