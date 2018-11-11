@@ -1,5 +1,192 @@
 <html>
-    <body>
-        <div id = "button">get the list of items</div>
-    </body>>
+<meta charset="UTF-8">
+<head>
+        <script type = 'text/javascript'>
+            var ul = document.getElementById('items');
+            const url = 'https://ece9065-cjia23-lab3-fengchuiyu.c9users.io/api/items/'
+
+            function createNode(element){
+                return document.createElement(element);
+            }
+        
+            function append(parent, el){
+                return parent.appendChild(el);
+            }
+            
+            function clear_page(){
+                var cas = document.getElementById('item info');
+                cas.parentNode.removeChild(cas);
+            }
+            
+
+            // Function to get all the fruit in the server /api/items
+            function get_all(){
+            fetch(url)
+              .then((resp) => resp.json())
+              .then(function(data){
+                //console.log(data);     
+                    return data.map(function(item){
+                        let li = createNode('li'),
+                            span = createNode('span');
+                        span.innerHTML = `id: ${item._id} Name: ${item.name}-${item.price} dollars-${item.quantity} 
+                                          available - tax rate: ${item.tax_rate}`;
+                        append(li,span);
+                        append(document.getElementById('item info'),li);
+                     })
+            })
+        
+              .catch(function(error){
+                   console.log(error);
+              })}
+            
+            // Function to create a new fruit in the server /api/items
+            function create_an_item(){
+                let data = {
+                        "name": document.getElementById("item name").value,
+                        "price": document.getElementById("item price").value,
+                        "quantity": document.getElementById("item quantity").value,
+                        "tax_rate": document.getElementById("item tax rate").value
+                }
+                
+                var request = new Request(url, {
+                    method: 'POST',
+                    body:JSON.stringify(data),
+                    headers: new Headers({'Content-Type': 'application/json'})
+                });
+                
+                fetch(request)
+                    .then(request => request.json())
+                    .then(data => {
+                       console.log(data);
+                    })
+                    .catch(function(err) {
+                       console.log(err)
+                    })
+            }    
+        
+            //Function to get a fruit /api/items/:id
+            function get_an_item(){
+            
+                var root = document.getElementById("item ID").value;
+                var url_id = url + root;
+
+                fetch(url_id)
+                   .then((resp) => resp.json())
+                   .then(function(item){
+                       console.log(item)
+                       let li = createNode('li')
+                           span = createNode('span')
+                           span.innerHTML=`id: ${item._id} Name: ${item.name}-${item.price} dollars-${item.quantity} 
+                                          available - tax rate: ${item.tax_rate}`
+                            append(li,span)
+                            append(document.getElementById('item info'),li)
+                   })
+                   .catch(function(error) {console.log(error);})
+            
+            }
+            
+            //Function to delete a fruit /api/items/:id
+            function delete_an_item(){
+                var root = document.getElementById("item ID").value;
+                var url_id = url + root;
+                let data = {
+                    id: root
+                }
+                var request = new Request(url_id, {
+                    method: 'DELETE',
+                    body: JSON.stringify(data),
+                    headers: new Headers({'Content-Type': 'application/json'})
+
+                });
+                
+                fetch(request)
+                    .then(request => request.json())
+                    .then(data => {
+                       console.log(data);
+                    })
+                    .catch(function(err) {
+                       console.log(err)
+                    })
+                
+            }
+        
+            //Function to update a fruit /api/items/:id
+            function update_an_item(){
+                var root = document.getElementById("item ID").value;
+                var url_id = url + root;
+                
+                let data = {
+                        "id": document.getElementById("item ID").value,
+                        //"name": document.getElementById("item name").value,
+                        //"price": document.getElementById("item price").value,
+                        "quantity": document.getElementById("item quantity").value,
+                        "tax_rate": document.getElementById("item tax rate").value
+                }
+                
+                var request = new Request(url_id, {
+                    method: 'PUT',
+                    body:JSON.stringify(data),
+                    headers: new Headers({'Content-Type': 'application/json'})
+                });
+                
+                fetch(request)
+                    .then(request => request.json())
+                    .then(data => {
+                       console.log(data);
+                    })
+                    .catch(function(err) {
+                       console.log(err)
+                    })
+            }    
+        
+            //Function async get_all
+            async function async_get_all(){
+                  while (2 > 0)
+                   {
+                    const response = fetch(url);
+                    const data = response.json();
+                    await setTimeout(2000);
+                    return data.map(function(item){
+                        let li = createNode('li'),
+                            span = createNode('span');
+                        span.innerHTML = `id: ${item._id} Name: ${item.name}-${item.price} dollars-${item.quantity} 
+                                          available - tax rate: ${item.tax_rate}`;
+                        append(li,span);
+                        append(document.getElementById('item info'),li);
+                    })
+                    }
+                }
+        </script>
+</head>
+<body>
+
+<h1>Fruits</h1>
+<button onclick="get_all();" id = "get_all"> GET - Get all</button>
+<button onclick = "clear_page()" id = "clear_list"> Clear</button> 
+<button onclick = "create_an_item();" id = "post_an_item"> POST - create an fruite</button> 
+<button onclick="get_an_item()" id = "get_an_item">GET an item</button>
+<button onclick="delete_an_item()" id = "delete_an_item">DELETE an item</button>
+<button onclick="update_an_item()" id = "update_an_item">UPDATE an item</button>
+<button onclick="async_get_all();" id = "async_get_all"> async_GET - Get all</button>
+
+<div>Item name:</div>
+<input type = 'textbox' id = "item name"></br>
+<div>Item price:</div>
+<input type = 'textbox' id = "item price"></br>
+<div>Item quantity:</div>
+<input type = 'textbox' id = "item quantity"></br>
+<div>Item tax rate:</div>
+<input type = 'textbox' id = "item tax rate"></br>
+
+</br>
+<div>Item ID:</div>
+<input type = 'textbox' id = "item ID"></br>
+
+        
+<ul id = "item info">
+
+</ul>
+
+</body>
+
 </html>

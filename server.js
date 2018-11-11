@@ -1,5 +1,7 @@
 //Chunyang Jia's Lab 3, 251001556
-
+//   /api for get request
+//   /api/items for get,post request
+//   /api/items/:item_ID for get,post,put request
 // going to use express and body parser packages
 var express = require('express');
 var app = express();
@@ -12,6 +14,13 @@ var Item = require('./app/models/item');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
+  next();
+});
 
 //Port set-up
 var port = process.env.PORT || 8080;
@@ -34,9 +43,9 @@ router.route('/items')
                 
                 var item = new Item();
                 item.name = req.body.name;
+                item.price = req.body.price;
                 item.quantity = req.body.quantity;
                 item.tax_rate = req.body.tax_rate;
-                item.price = req.body.price;
         
                 item.save(function(err) {
                   if(err)
@@ -55,11 +64,11 @@ router.route('/items')
             });
         });
         
-router.route('/items/:item_id')
+router.route('/items/:id')
         
         .get(function(req, res){
           
-            Item.findById(req.params.item_id,function(err,item){
+            Item.findById(req.params.id,function(err,item){
                  if(err)
                     res.send(err);
                   
@@ -69,14 +78,15 @@ router.route('/items/:item_id')
 
         .put(function(req,res){
           
-             Item.findById(req.params.item_id,function(err,item){
+             Item.findById(req.params.id,function(err,item){
                if(err)
                   res.send(err);
-                
-                item.name = req.body.name;
+                item.name = item.name;
+                item.price = item.price;
                 item.quantity = req.body.quantity;
                 item.tax_rate = req.body.tax_rate;
-                item.price = req.body.price;
+                
+                
                 
                 item.save(function(err){
                    if(err)
@@ -89,7 +99,7 @@ router.route('/items/:item_id')
         
         .delete(function(req,res){
               Item.remove({
-                _id: req.params.item_id
+                _id: req.params.id
               }, function(err,item){
                   if(err)
                       res.send(err);
